@@ -1,0 +1,19 @@
+import socket
+import json
+import base64
+
+f = open("video27ce97e2-d936-4815-b15b-8a0bee546cbb.h264", "rb")
+data = f.read()
+
+encoded = base64.b64encode(data)
+
+payload = {"VideoName": "video27ce97e2-d936-4815-b15b-8a0bee546cbb.h264", "Data": encoded}
+
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+
+clientSocket.connect(("192.168.104.141", 7777));
+
+clientSocket.send(json.dumps(payload));
+
+
+
