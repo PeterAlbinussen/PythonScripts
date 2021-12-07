@@ -1,0 +1,58 @@
+import io
+import socket
+import struct
+import time
+import picamera
+import RPi.GPIO as GPIO
+import uuid
+import json
+import base64
+from datetime import datetime
+
+camera = picamera.PiCamera()
+
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+clientSocket.connect(('192.168.104.141', 7777))  # ADD IP HERE
+
+SENSOR_PIN = 23
+ 
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(SENSOR_PIN, GPIO.IN)
+ 
+def my_callback(channel):
+    videoid = uuid.uuid4()
+    videoname = 'video' + str(videoid) + '.h264'
+    placement = 'Front Door'
+    videodata = placement + str(datetime.now()) + str(videoid)
+    print(videodata)
+    camera.resolution = (500, 480)
+    camera.start_preview()
+    time.sleep(3)
+    camera.start_recording('/home/pi/benjamin/' + str(videoname))
+    time.sleep(5)
+    camera.stop_recording()
+    camera.stop_preview()
+
+   # f = open(videoname, "rb")
+   # data = f.read()
+
+   # encoded = base64.b64encode(data)
+
+   # payload = {"VideoName": videoname, "Data": encoded}
+
+   # clientSocket.send(json.dumps(payload));
+    
+
+connection = clientSocket.makefile('wb')
+try:
+    GPIO.add_event_detect(SENSOR_PIN , GPIO.RISING, callback=my_callback)
+#    while True:
+        #time.sleep(100)
+	#except KeyboardInterrupt:
+    	#print ('Finish...')
+	
+#GPIO.cleanup()
+
+#finally:
+    #connection.close()
+    #client_socket.close()
