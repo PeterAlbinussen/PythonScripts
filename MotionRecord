@@ -32,17 +32,7 @@ def my_callback(channel):
     time.sleep(5)
     camera.stop_recording()
     camera.stop_preview()
-
-   # f = open(videoname, "rb")
-   # data = f.read()
-
-   # encoded = base64.b64encode(data)
-
-   # payload = {"VideoName": videoname, "Data": encoded}
-
-   # clientSocket.send(json.dumps(payload));
     
-
 connection = clientSocket.makefile('wb')
 try:
     GPIO.add_event_detect(SENSOR_PIN , GPIO.RISING, callback=my_callback)
